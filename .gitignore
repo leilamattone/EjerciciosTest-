@@ -1,0 +1,32 @@
+﻿## Visual Studio
+.vs/
+bin/
+obj/
+TestResults/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+bld/
+
+## NuGet
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+
+## Test Results
+*.trx
+*.coverage
+*.coveragexml
+
+## Screenshots (opcional - si no quieres subirlos)
+# Screenshots/
