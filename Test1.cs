@@ -1,16 +1,18 @@
-﻿using OpenQA.Selenium;
+﻿using System.Collections.ObjectModel;
+
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+
 using SeleniumExtras.WaitHelpers;
-using System.Diagnostics.Metrics;
 
 namespace EjerciciosTest
 {
     [TestClass]
     public sealed class Test1
     {   //ejercicio
-        
-        private IWebDriver driver;
+
+        private ChromeDriver? Driver; //[Comment] Nombres fuera del metodo deben ser PascalCase por convención, y no deben ser públicos a menos que sea necesario. Se cambió a private IWebDriver driver;
 
         [TestInitialize]
         public void Setup()
@@ -28,49 +30,62 @@ namespace EjerciciosTest
             options.AddArgument("--ignore-ssl-errors");
 
             //Inicialización del controlador de Chrome con las opciones configuradas
-            driver = new ChromeDriver(options);
+            Driver = new ChromeDriver(options);
         }
         [TestMethod]
         //Conexión a la página de OpenCart y búsqueda de "Your Store"
         public void Ejercicio1()
         {
-            driver.Navigate().GoToUrl("http://opencart.abstracta.us/");
+            Driver?.Navigate().GoToUrl("http://opencart.abstracta.us/");
 
-            string tituloActual = driver.Title;
+            /*
+            if(string.IsNullOrEmpty(Driver?.Title))
+            {
+                titulo = "";
+            }
+            else
+            {
+                titulo = Driver.Title;
+            }
+
+            string titulo = string.IsNullOrEmpty(Driver?.Title) ? "" : Driver.Title;
+             */
+
+            string tituloActual = Driver?.Title ?? "";
             bool contieneYourStore = tituloActual.Contains("Your Store");
 
             Console.WriteLine($"Título de la página: {tituloActual}");
             Console.WriteLine($"¿Contiene 'Your Store'?: {(contieneYourStore ? "Sí" : "No")}");
 
             // Espera 5 segundos para ver el resultado (antes del Assert)
-            Thread.Sleep(5000);
+            //Thread.Sleep(5000); //Espera siempre 5 segundos, aunque el resultado ya se mostró. No es ideal porque puede hacer que los tests sean más lentos de lo necesario.
 
             // El Assert se ejecuta al final, después de ver el resultado
             Assert.IsTrue(contieneYourStore, $"El título '{tituloActual}' NO contiene 'Your Store'");
         }
+
         [TestMethod]
         //Conexión a la página de OpenCart y búsqueda de elementos de la página de login
         public void Ejercicio2()
         {
-            driver.Navigate().GoToUrl("http://opencart.abstracta.us/index.php?route=account/login");
+            Driver.Navigate().GoToUrl("http://opencart.abstracta.us/index.php?route=account/login");
 
             // Buscar el input de email por ID
-            IWebElement emailInput = driver.FindElement(By.Id("input-email"));
+            IWebElement emailInput = Driver.FindElement(By.Id("input-email-asd"));
 
             // Verificar si el elemento fue encontrado y está visible
             bool seEncontroEmailInput = emailInput != null && emailInput.Displayed;
 
             Console.WriteLine($"¿Se encontró el input de email?: {(seEncontroEmailInput ? "Sí" : "No")}");
-        
 
             // Espera 5 segundos para ver el resultado (antes del Assert)
-            Thread.Sleep(5000);
+            // Thread.Sleep(5000);
 
             // El Assert se ejecuta al final, después de ver el resultado
             Assert.IsTrue(seEncontroEmailInput, "No se encontró el input de email en la página de login");
 
             // Buscar por nombre la password
-            IWebElement passField = driver.FindElement(By.Name("password"));
+            IWebElement passField = Driver.FindElement(By.Name("password"));
 
             // Verificar si el elemento fue encontrado y está visible
             bool seEncontroPassword = passField != null && passField.Displayed;
@@ -79,7 +94,7 @@ namespace EjerciciosTest
 
             Assert.IsTrue(seEncontroPassword, "No se encontró el elemento password");
             // Buscar por CssSelector el botón de Login
-            IWebElement loginBtn = driver.FindElement(By.CssSelector("input[value='Login']"));
+            IWebElement loginBtn = Driver.FindElement(By.CssSelector("input[value='Login']"));
 
             // Verificar si el botón de Login fue encontrado y está visible
             bool seEncontroLogin = loginBtn != null && loginBtn.Displayed;
@@ -89,39 +104,43 @@ namespace EjerciciosTest
             Assert.IsTrue(seEncontroLogin, "No se encontró el botón de login");
 
             // Buscar por LinkText el link de "Forgotten Password"
-            IWebElement forgotLink = driver.FindElement(By.LinkText("Forgotten Password"));
+            IWebElement forgotLink = Driver.FindElement(By.LinkText("Forgotten Password"));
 
             // Verificar si encontró el link de "Forgotten Password" y está visible
-             
+
             bool seEncontroLink = forgotLink != null && forgotLink.Displayed;
 
             Console.WriteLine($"¿Se encontró el link de Forgotten Password?: {(seEncontroLink ? "Sí" : "No")}");
 
             Assert.IsTrue(seEncontroLogin, "No se encontró el botón de login");
+
+            IWebElement btnCart = Driver.FindElement(By.XPath("//*[@id=\"cart\"]/button"));
+
         }
         [TestMethod]
         public void Ejercicio3()
         {
-            driver.Navigate().GoToUrl("http://opencart.abstracta.us/index.php?route=account/register");
+            Driver.Navigate().GoToUrl("http://opencart.abstracta.us/index.php?route=account/register");
 
             // Ingresar datos en First Name, Last Name, Email y Telephone.
-            driver.FindElement(By.Id("input-firstname")).SendKeys("Leila Sol");
-            driver.FindElement(By.Id("input-lastname")).SendKeys("Mattone");
+            Driver.FindElement(By.Id("input-firstname")).SendKeys("Leila Sol");
+            Driver.FindElement(By.Id("input-lastname")).SendKeys("Mattone");
             //driver.FindElement(By.Id("input-email")).SendKeys($"leila3@test.com");
-            driver.FindElement(By.Id("input-email")).SendKeys($"leila{DateTime.Now.Ticks}@test.com");
-            driver.FindElement(By.Id("input-telephone")).SendKeys("987654321");
-            driver.FindElement(By.Id("input-password")).SendKeys("Pass12345!");
-            driver.FindElement(By.Id("input-confirm")).SendKeys("Pass12345!");
+            Driver.FindElement(By.Id("input-email")).SendKeys($"leila{DateTime.Now.Ticks}@test.com");
+            Driver.FindElement(By.Id("input-telephone")).SendKeys("987654321");
+            Driver.FindElement(By.Id("input-password")).SendKeys("Pass12345!");
+            Driver.FindElement(By.Id("input-confirm")).SendKeys("Pass12345!");
 
             // Aceptar Privacy Policy
-            driver.FindElement(By.Name("agree")).Click();
-            driver.FindElement(By.CssSelector("input[value='Continue']")).Click();
+            Driver.FindElement(By.Name("agree")).Click();
+            Driver.FindElement(By.CssSelector("input[value='Continue']")).Click();
 
             // Esperar 3 segundos para que cargue la página de confirmación
             Thread.Sleep(3000);
 
             // Verificar que la cuenta fue creada exitosamente
-            StringAssert.Contains(driver.PageSource, "Your Account Has Been Created");
+            StringAssert.Contains(Driver.PageSource, "Your Account Has Been Created");
+            //Buscar si existe Div de Exito
 
             // Esperar 5 segundos para ver el resultado
             Thread.Sleep(5000);
@@ -129,29 +148,29 @@ namespace EjerciciosTest
         [TestMethod]
         public void Ejercicio4()
         {
-            driver.Navigate().GoToUrl("https://opencart.abstracta.us/index.php?route=account/login");
+            Driver.Navigate().GoToUrl("https://opencart.abstracta.us/index.php?route=account/login");
 
             // Realizar el login
-            driver.FindElement(By.Id("input-email")).SendKeys("leila3@test.com");
-            driver.FindElement(By.Id("input-password")).SendKeys("Pass12345!");
-            driver.FindElement(By.CssSelector("input[value='Login']")).Click();
+            Driver.FindElement(By.Id("input-email")).SendKeys("leila3@test.com");
+            Driver.FindElement(By.Id("input-password")).SendKeys("Pass12345!");
+            Driver.FindElement(By.CssSelector("input[value='Login']")).Click();
 
             // Esperar 3 segundos para que cargue la página después del login
             Thread.Sleep(3000);
 
             // Imprimir información de debugging
-            Console.WriteLine($"URL actual: {driver.Url}");
-            Console.WriteLine($"¿Contiene error?: {driver.PageSource.Contains("Warning")}");
+            Console.WriteLine($"URL actual: {Driver.Url}");
+            Console.WriteLine($"¿Contiene error?: {Driver.PageSource.Contains("Warning")}");
 
             // Verificar login exitoso
-            StringAssert.Contains(driver.Url, "route=account/account", "El login falló - no se redirigió a la página de cuenta");
-            StringAssert.Contains(driver.PageSource, "My Account");
+            StringAssert.Contains(Driver.Url, "route=account/account", "El login falló - no se redirigió a la página de cuenta");
+            StringAssert.Contains(Driver.PageSource, "My Account");
 
             // Logout
-            driver.FindElement(By.LinkText("Logout")).Click();
+            Driver.FindElement(By.LinkText("Logout")).Click();
             Thread.Sleep(2000);
 
-            StringAssert.Contains(driver.PageSource, "logged off");
+            StringAssert.Contains(Driver.PageSource, "logged off");
 
             // Esperar 5 segundos para ver el resultado
             Thread.Sleep(5000);
@@ -160,31 +179,35 @@ namespace EjerciciosTest
         public void Ejercicio5()
         {
             // Arrange o preparación
-            driver.Navigate().GoToUrl("https://opencart.abstracta.us/");
+            Driver.Navigate().GoToUrl("https://opencart.abstracta.us/");
+
+            IWebElement divSearch = Driver.FindElement(By.Id("search"));
+            IWebElement txtSearch = divSearch.FindElement(By.TagName("input"));
+            IWebElement btnSearch = divSearch.FindElement(By.TagName("button"));
 
             // Act o pasos de la prueba
             // Buscar el campo de búsqueda y escribir un término inexistente
-            IWebElement searchBox = driver.FindElement(By.Name("search"));
+            IWebElement searchBox = Driver.FindElement(By.Name("search"));
             searchBox.Clear();
             //searchBox.SendKeys("xyzabc999");
             searchBox.SendKeys("MacBook");
 
             // Hacer clic en el botón de búsqueda
-            driver.FindElement(By.CssSelector("button.btn.btn-default.btn-lg")).Click();
+            btnSearch.Click();
 
             // Esperar 3 segundos para que carguen los resultados
             Thread.Sleep(3000);
 
             // Assert o validaciones
             // Buscar elementos de productos en la página (usando el selector de productos)
-            var productosEncontrados = driver.FindElements(By.CssSelector(".product-thumb"));
+            ReadOnlyCollection<IWebElement> productosEncontrados = Driver.FindElements(By.CssSelector(".product-thumb"));
 
             // Ahora esperamos que SÍ haya productos porque buscamos "MacBook"
             bool hayProductos = productosEncontrados.Count > 0;
 
             Console.WriteLine($"Cantidad de productos encontrados: {productosEncontrados.Count}");
             Console.WriteLine($"¿Se encontraron productos?: {(hayProductos ? "Sí, correcto" : "No, error")}");
-            Console.WriteLine($"URL actual: {driver.Url}");
+            Console.WriteLine($"URL actual: {Driver.Url}");
 
             // Verificar que SÍ se encontraron productos (Count debe ser mayor a 0 para MacBook)
             Assert.IsTrue(hayProductos, $"Se esperaba encontrar productos de MacBook, pero se encontraron {productosEncontrados.Count}");
@@ -196,14 +219,14 @@ namespace EjerciciosTest
         public void Ejercicio6()
         {
             // Arrange o preparación
-            driver.Navigate().GoToUrl("https://opencart.abstracta.us/index.php?route=product/product&product_id=40");
+            Driver.Navigate().GoToUrl("https://opencart.abstracta.us/index.php?route=product/product&product_id=40");
 
             // Crear WebDriverWait con timeout de 10 segundos
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new(Driver, TimeSpan.FromSeconds(10));
 
             // Act o pasos de la prueba
             // Hacer clic en el botón Add to Cart
-            driver.FindElement(By.CssSelector("button.btn.btn-primary.btn-lg.btn-block")).Click();
+            Driver.FindElement(By.CssSelector("button.btn.btn-primary.btn-lg.btn-block")).Click();
 
             // Esperar a que aparezca el mensaje de éxito (alert-success)
             IWebElement alertaExito = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".alert-success")));
@@ -215,13 +238,13 @@ namespace EjerciciosTest
 
             Console.WriteLine($"Mensaje de éxito: {mensajeExito}");
             Console.WriteLine($"¿Producto agregado correctamente?: {(productoAgregado ? "Sí" : "No")}");
-            Console.WriteLine($"URL actual: {driver.Url}");
+            Console.WriteLine($"URL actual: {Driver.Url}");
 
             // Verificar que el producto se agregó exitosamente al carrito
             Assert.IsTrue(productoAgregado, "No se mostró el mensaje de éxito al agregar el producto al carrito");
 
             // Verificar que el contador del carrito en el header cambió a 1 item
-            IWebElement totalCarrito = driver.FindElement(By.Id("cart-total"));
+            IWebElement totalCarrito = Driver.FindElement(By.Id("cart-total"));
             string textoCarrito = totalCarrito.Text;
             bool hayUnItem = textoCarrito.Contains("1 item") || textoCarrito.Contains("1 Item");
 
@@ -246,7 +269,7 @@ namespace EjerciciosTest
                 this.driver = driver;
             }
 
-            // Método para navegar a la página de login
+            // Método para navegar a la página de login -> Es parte de los TESTs, no del POM. El POM solo debería tener métodos relacionados con la interacción con la página, no con la navegación general del sitio.
             public void IrAPaginaLogin()
             {
                 driver.Navigate().GoToUrl(URL_LOGIN);
@@ -272,12 +295,13 @@ namespace EjerciciosTest
                 HacerClickLogin();
             }
         }
+
         [TestMethod]
         // Test usando LoginPom
         public void Ejercicio7()
         {
             // Crear instancia del Page Object Model para Login
-            var logPom = new LoginPage(driver);
+            var logPom = new LoginPage(Driver);
 
             // Navegar a la página de login usando el POM
             logPom.IrAPaginaLogin();
@@ -289,28 +313,28 @@ namespace EjerciciosTest
             Thread.Sleep(3000);
 
             // Imprimir información de debugging
-            Console.WriteLine($"URL actual: {driver.Url}");
-            Console.WriteLine($"¿Contiene error?: {driver.PageSource.Contains("Warning")}");
+            Console.WriteLine($"URL actual: {Driver.Url}");
+            Console.WriteLine($"¿Contiene error?: {Driver.PageSource.Contains("Warning")}");
 
             // Verificar login exitoso
-            StringAssert.Contains(driver.Url, "route=account/account", "El login falló - no se redirigió a la página de cuenta");
-            StringAssert.Contains(driver.PageSource, "My Account");
+            StringAssert.Contains(Driver.Url, "route=account/account", "El login falló - no se redirigió a la página de cuenta");
+            StringAssert.Contains(Driver.PageSource, "My Account");
 
             // Logout
-            driver.FindElement(By.LinkText("Logout")).Click();
+            Driver.FindElement(By.LinkText("Logout")).Click();
             Thread.Sleep(2000);
 
-            StringAssert.Contains(driver.PageSource, "logged off");
+            StringAssert.Contains(Driver.PageSource, "logged off");
         }
         [TestMethod]
         // Test usando WebDriverWait con ElementToBeClickable - Búsqueda y agregar producto
         public void Ejercicio8()
         {
             // Arrange o preparación - Navegar a la página principal
-            driver.Navigate().GoToUrl("https://opencart.abstracta.us/");
+            Driver.Navigate().GoToUrl("https://opencart.abstracta.us/");
 
             // Crear WebDriverWait con timeout de 10 segundos
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new(Driver, TimeSpan.FromSeconds(10));
 
             // Act - Paso 1: Buscar "Mac"
             // Esperar a que el campo de búsqueda sea clickeable
@@ -355,13 +379,13 @@ namespace EjerciciosTest
 
             Console.WriteLine($"Mensaje de éxito: {mensajeExito}");
             Console.WriteLine($"¿Producto agregado correctamente?: {(productoAgregado ? "Sí" : "No")}");
-            Console.WriteLine($"URL actual: {driver.Url}");
+            Console.WriteLine($"URL actual: {Driver.Url}");
 
             // Verificar que el producto se agregó exitosamente al carrito
             Assert.IsTrue(productoAgregado, "No se mostró el mensaje de éxito al agregar el producto al carrito");
 
             // Verificar que el contador del carrito en el header cambió a 1 item
-            IWebElement totalCarrito = driver.FindElement(By.Id("cart-total"));
+            IWebElement totalCarrito = Driver.FindElement(By.Id("cart-total"));
             string textoCarrito = totalCarrito.Text;
             bool hayUnItem = textoCarrito.Contains("1 item") || textoCarrito.Contains("1 Item");
 
@@ -371,17 +395,17 @@ namespace EjerciciosTest
             // Verificar que el carrito muestra 1 item
             Assert.IsTrue(hayUnItem, $"Se esperaba '1 item' en el carrito, pero se encontró: {textoCarrito}");
 
-            
+
         }
         [TestMethod]
         // Test - Búsqueda y agregar 2 productos diferentes
         public void Ejercicio9()
         {
             // Arrange o preparación - Navegar a la página principal
-            driver.Navigate().GoToUrl("https://opencart.abstracta.us/");
+            Driver.Navigate().GoToUrl("https://opencart.abstracta.us/");
 
             // Crear WebDriverWait con timeout de 10 segundos
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new(Driver, TimeSpan.FromSeconds(10));
 
             // Act - Paso 1: Buscar "Mac"
             // Esperar a que el campo de búsqueda sea clickeable
@@ -426,13 +450,13 @@ namespace EjerciciosTest
 
             Console.WriteLine($"Mensaje de éxito: {mensajeExito}");
             Console.WriteLine($"¿Producto agregado correctamente?: {(productoAgregado ? "Sí" : "No")}");
-            Console.WriteLine($"URL actual: {driver.Url}");
+            Console.WriteLine($"URL actual: {Driver.Url}");
 
             // Verificar que el producto se agregó exitosamente al carrito
             Assert.IsTrue(productoAgregado, "No se mostró el mensaje de éxito al agregar el producto al carrito");
 
             // Verificar que el contador del carrito en el header cambió a 1 item
-            IWebElement totalCarrito = driver.FindElement(By.Id("cart-total"));
+            IWebElement totalCarrito = Driver.FindElement(By.Id("cart-total"));
             string textoCarrito = totalCarrito.Text;
             bool hayUnItem = textoCarrito.Contains("1 item") || textoCarrito.Contains("1 Item");
 
@@ -446,7 +470,7 @@ namespace EjerciciosTest
             Console.WriteLine("\n--- Iniciando búsqueda del segundo producto ---");
 
             // Volver a la página principal para buscar otro producto
-            driver.Navigate().GoToUrl("https://opencart.abstracta.us/");
+            Driver.Navigate().GoToUrl("https://opencart.abstracta.us/");
 
             // Act - Paso 4: Buscar "iphone"
             IWebElement searchBox2 = wait.Until(ExpectedConditions.ElementToBeClickable(By.Name("search")));
@@ -491,7 +515,7 @@ namespace EjerciciosTest
             Assert.IsTrue(segundoProductoAgregado, "No se mostró el mensaje de éxito al agregar el iPhone al carrito");
 
             // Verificar que el contador del carrito ahora muestra 2 items
-            IWebElement totalCarrito2 = driver.FindElement(By.Id("cart-total"));
+            IWebElement totalCarrito2 = Driver.FindElement(By.Id("cart-total"));
             string textoCarrito2 = totalCarrito2.Text;
             bool hayDosItems = textoCarrito2.Contains("2 item") || textoCarrito2.Contains("2 Item");
 
@@ -505,7 +529,7 @@ namespace EjerciciosTest
             Console.WriteLine("\n--- Verificando productos en la tabla del carrito ---");
 
             // Navegar al carrito para ver la tabla de productos
-            driver.FindElement(By.Id("cart-total")).Click();
+            Driver.FindElement(By.Id("cart-total")).Click();
             Thread.Sleep(1000);
 
             // Hacer clic en "View Cart" para ver el carrito completo
@@ -519,10 +543,10 @@ namespace EjerciciosTest
 
             // Obtener todas las filas de la tabla de productos que contienen una imagen de producto
             // Esto filtra las filas que realmente son productos (excluye subtotales, shipping, etc.)
-            var todasLasFilas = driver.FindElements(By.CssSelector(".table.table-bordered tbody tr"));
+            var todasLasFilas = Driver.FindElements(By.CssSelector(".table.table-bordered tbody tr"));
 
             // Filtrar solo las filas que contienen productos (tienen una celda con imagen)
-            var filasProductos = todasLasFilas.Where(fila => 
+            var filasProductos = todasLasFilas.Where(fila =>
             {
                 try
                 {
@@ -544,7 +568,7 @@ namespace EjerciciosTest
 
             // Para cada fila, extraer y verificar información
             int contador = 1;
-            foreach (var fila in filasProductos)
+            foreach(var fila in filasProductos)
             {
                 try
                 {
@@ -571,20 +595,20 @@ namespace EjerciciosTest
                     Console.WriteLine($"  Precio Total: {precioTotal}");
 
                     // Verificación 1: Verificar que el nombre del producto NO está vacío
-                    Assert.IsFalse(string.IsNullOrWhiteSpace(nombreEnCarrito), 
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(nombreEnCarrito),
                         $"El nombre del producto {contador} está vacío");
 
                     // Verificación 2: Verificar que la cantidad inicial de cada producto es 1
-                    Assert.AreEqual("1", cantidadEnCarrito, 
+                    Assert.AreEqual("1", cantidadEnCarrito,
                         $"Se esperaba cantidad '1' para el producto {contador} ({nombreEnCarrito}), pero se encontró '{cantidadEnCarrito}'");
 
                     // Verificación adicional: Verificar que el precio no está vacío
-                    Assert.IsFalse(string.IsNullOrWhiteSpace(precioUnitario), 
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(precioUnitario),
                         $"El precio del producto {contador} ({nombreEnCarrito}) está vacío");
 
                     contador++;
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
                     Console.WriteLine($"Error al procesar fila {contador}: {ex.Message}");
                     throw;
@@ -600,7 +624,7 @@ namespace EjerciciosTest
         //Cierre de conexión
         public void TearDown()
         {
-            driver.Quit();
+            Driver.Quit();
         }
     }
 
@@ -633,7 +657,7 @@ namespace EjerciciosTest
             try
             {
                 // Verificar el resultado del test
-                if (TestContext.CurrentTestOutcome == UnitTestOutcome.Failed)
+                if(TestContext.CurrentTestOutcome == UnitTestOutcome.Failed)
                 {
                     Console.WriteLine($"\n⚠️ Test '{TestContext.TestName}' FALLÓ - Capturando screenshot...");
 
@@ -648,7 +672,7 @@ namespace EjerciciosTest
 
                     // Crear directorio para screenshots si no existe
                     string directorioScreenshots = Path.Combine(TestContext.TestRunDirectory, "Screenshots");
-                    if (!Directory.Exists(directorioScreenshots))
+                    if(!Directory.Exists(directorioScreenshots))
                     {
                         Directory.CreateDirectory(directorioScreenshots);
                     }
@@ -671,7 +695,7 @@ namespace EjerciciosTest
                     Console.WriteLine($"\n✓ Test '{TestContext.TestName}' completado exitosamente - No se requiere screenshot");
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine($"❌ Error al capturar screenshot: {ex.Message}");
             }
@@ -715,7 +739,7 @@ namespace EjerciciosTest
             Console.WriteLine($"Título actual de la página: {tituloActual}");
 
             // Este Assert FALLARÁ intencionalmente para disparar la captura de screenshot
-            Assert.IsTrue(tituloActual.Contains("Texto Inexistente XYZ123"), 
+            Assert.IsTrue(tituloActual.Contains("Texto Inexistente XYZ123"),
                 "Este Assert falla intencionalmente para demostrar la captura de screenshots cuando un test falla");
         }
 
@@ -736,7 +760,7 @@ namespace EjerciciosTest
 
             // Este Assert debería fallar porque las credenciales son incorrectas
             // y NO debería redirigir a la página de cuenta
-            Assert.IsTrue(driver.Url.Contains("route=account/account"), 
+            Assert.IsTrue(driver.Url.Contains("route=account/account"),
                 "Login falló - Las credenciales incorrectas no permitieron el acceso");
         }
     }
