@@ -1,7 +1,8 @@
-﻿using EjerciciosTest.Test;
+﻿
+using EjerciciosTest.Pages;
 using OpenQA.Selenium;
 
-namespace EjerciciosTest._03.Test
+namespace EjerciciosTest.Test
 {
     [TestClass]
     public class Ejercicio4bTest : Test_Base
@@ -11,16 +12,26 @@ namespace EjerciciosTest._03.Test
         public void Test_IngresoTextoLimpiezaCampos()
         {
             // ==================== ARRANGE ====================
-            string urlPrincipal = "http://opencart.abstracta.us";
+            // Ya estamos en la página principal gracias a Test_Base.Setup()
+             Console.WriteLine($"✓ Página principal cargada automáticamente: {Driver?.Url}");
 
             // ==================== ACT ====================
             // Paso 1: Navegar a la página principal
-            Driver?.Navigate().GoToUrl(urlPrincipal);
-            Console.WriteLine($"✓ Navegación a página principal: {Driver?.Url}");
+            //Driver?.Navigate().GoToUrl(urlPrincipal);
+            //Console.WriteLine($"✓ Navegación a página principal: {Driver?.Url}");
 
-            // Paso 2: Localizar el campo de búsqueda con By.Name("search")
+            // ========== USANDO SEARCHPAGE con método Get ==========
+            // Crear instancia de SearchPage
+            var searchPage = new SearchPage(Driver);
+
+            // Paso 2: Localizar el campo de búsqueda usando SearchPage
+            IWebElement searchField = searchPage.GetSearchField();
+            Console.WriteLine("✓ Campo de búsqueda localizado (usando SearchPage.GetSearchField())");
+
+            /* ========== CÓDIGO ORIGINAL COMENTADO ==========
             IWebElement searchField = Driver.FindElement(By.Name("search"));
             Console.WriteLine("✓ Campo de búsqueda localizado");
+            ========================================================================== */
 
             // Paso 3: Ingresar "iPhone" con SendKeys y verificar el valor con GetAttribute("value")
             searchField.SendKeys("iPhone");

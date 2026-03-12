@@ -2,7 +2,7 @@
 using OpenQA.Selenium;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
-namespace EjerciciosTest._03.Test
+namespace EjerciciosTest.Test
 {
     [TestClass]
     public class Ejercicio5bTest : Test_Base
@@ -12,12 +12,12 @@ namespace EjerciciosTest._03.Test
         public void Test_NavegarPaginas()
         {
             // ==================== ARRANGE ====================
-            string url = "http://opencart.abstracta.us";
+            // Ya estamos en la página principal gracias a Test_Base.Setup()
+            Console.WriteLine($"✓ Página principal cargada automáticamente: {Driver?.Url}");
 
             // ==================== ACT ====================
             // Paso 1: Navegar a la página principal y guardar su URL en una variable
-            Driver?.Navigate().GoToUrl(url);
-            Console.WriteLine($"✓ Navegación a página principal: {Driver?.Url}");
+
             string urlPrincipal = Driver.Url;
 
             // Paso 2: Hacer clic en el link "Desktops" del menú para abrir el dropdown

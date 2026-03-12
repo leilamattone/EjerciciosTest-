@@ -9,6 +9,9 @@ namespace EjerciciosTest.Test
         // Aquí puedes agregar cualquier configuración común para tus pruebas, como inicialización de datos, configuración de entorno, etc.
         // Driver, TestInitialize, TestCleanup, etc.
 
+        // URL principal de la aplicación
+        protected const string UrlPrincipal = "http://opencart.abstracta.us";
+
         // Cambiar a protected para que las clases hijas puedan acceder
         protected IWebDriver? Driver;
 
@@ -29,6 +32,9 @@ namespace EjerciciosTest.Test
 
             //Inicialización del controlador de Chrome con las opciones configuradas
             Driver = new ChromeDriver(options);
+
+            // Navegar automáticamente a la página principal
+            Driver.Navigate().GoToUrl(UrlPrincipal);
         }
 
         [TestCleanup]

@@ -1,7 +1,8 @@
 ﻿using EjerciciosTest.Test;
+using EjerciciosTest.Pages;
 using OpenQA.Selenium;
 
-namespace EjerciciosTest._03.Test
+namespace EjerciciosTest.Test
 {
     [TestClass]
     public class Ejercicio2bTest : Test_Base
@@ -11,21 +12,37 @@ namespace EjerciciosTest._03.Test
         public void Test_BuscarElementos()
         {
             // ==================== ARRANGE ====================
-            string urlEsperada = "http://opencart.abstracta.us";
+            // Ya estamos en la página principal gracias a Test_Base.Setup()
+            Console.WriteLine($"✓ Página principal cargada automáticamente: {Driver?.Url}");
 
             // ==================== ACT ====================
             // Navegar a la página
-            Driver?.Navigate().GoToUrl(urlEsperada);
+            //Driver?.Navigate().GoToUrl(urlEsperada);
 
-            // Obtener elementos de la página
-            IWebElement eCart = Driver.FindElement(By.Id("cart"));
+            // ========== USANDO SEARCHPAGE con método Get ==========
+            // Crear instancia de CartPage
+            var cartPage = new CartPage(Driver);
+            // Crear instancia de SearchPage
+            var searchPage = new SearchPage(Driver);
+
+            // Obtener elementos de la página usando SearchPage y CartPage
+            IWebElement eCart = cartPage.GetECart();
+            IWebElement searchField = searchPage.GetSearchField();
+
+            /* ========== CÓDIGO ORIGINAL COMENTADO ==========
+             * IWebElement eCart = Driver.FindElement(By.Id("cart"));
             IWebElement searchField = Driver.FindElement(By.CssSelector("input[name=\"search\"]"));
+            ========================================================================== */
 
             // Obtener valores actuales
             string urlActual = Driver?.Url;
             bool seEncontroCart = eCart != null && eCart.Displayed;
             bool seEncontroSearch = searchField != null && searchField.Displayed;
+            string textoCarrito = cartPage.GetTextoCarrito();
+
+            /* ========== CÓDIGO ORIGINAL COMENTADO ==========
             string textoCarrito = eCart.Text;
+            ========================================================================== */
 
             // ==================== ASSERT ====================
             // Verificar que estamos en la URL correcta
