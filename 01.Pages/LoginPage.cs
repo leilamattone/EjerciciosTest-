@@ -13,10 +13,10 @@ namespace EjerciciosTest.Pages
         private IWebElement BtnMyAccount => driver.FindElement(By.LinkText("My Account"));
 
         // Propiedad privada - Localizador del campo de email
-        private IWebElement EmailInput => driver.FindElement(By.Id("input-email"));
+        public IWebElement EmailInput => driver.FindElement(By.Id("input-email"));
 
         // Propiedad privada - Localizador del campo de password
-        private IWebElement EnterPassInput => driver.FindElement(By.Id("input-password"));
+        public IWebElement EnterPassInput => driver.FindElement(By.Id("input-password"));
 
         // Propiedad privada - Localizador del botón de login
         private IWebElement BtnLogin => driver.FindElement(By.CssSelector("input[value='Login']"));
@@ -35,6 +35,15 @@ namespace EjerciciosTest.Pages
 
         // Propiedad pública - Localizador del mensaje de error (para verificación en tests)
         public IWebElement ErrorMessage => driver.FindElement(By.CssSelector(".alert.alert-danger"));
+
+        // Propiedad privada - Localizador del link "Register" en el menú de la derecha
+        private IWebElement BtnRegister => driver.FindElement(By.LinkText("Register"));
+
+        // Propiedad privada - Localizador del link "Register" en el menú de la derecha
+        public IWebElement BtnCheckBox => driver.FindElement(By.Name("agree"));
+
+        // Propiedad para registrarme como nuevo uusario, "boton" continue
+        public IWebElement BtnContinue => driver.FindElement(By.XPath("//*[@id=\"content\"]/form/div/div/input[2]"));
 
         // ========== MÉTODOS DE ACCIÓN ==========
         public void IngresarEmail(string email)
@@ -70,6 +79,20 @@ namespace EjerciciosTest.Pages
             LinkLogin.Click();
         }
 
+        public void HacerClickRegister()
+        {
+            BtnRegister.Click();
+        }
+
+        public void HacerClickBtnCheckBox()
+        {
+            BtnCheckBox.Click();
+        }
+
+        public void HacerClickBtnContinue()
+        {
+            BtnContinue.Click();
+        }
         /// <summary>
         /// Attempts to log in a user using the specified email address and password.
         /// </summary>

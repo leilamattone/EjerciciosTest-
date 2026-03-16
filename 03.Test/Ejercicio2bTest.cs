@@ -26,8 +26,8 @@ namespace EjerciciosTest.Test
             var searchPage = new SearchPage(Driver);
 
             // Obtener elementos de la página usando SearchPage y CartPage
-            IWebElement eCart = cartPage.GetECart();
             IWebElement searchField = searchPage.GetSearchField();
+            string textoCarrito = cartPage.GetTextoCarrito();
 
             /* ========== CÓDIGO ORIGINAL COMENTADO ==========
              * IWebElement eCart = Driver.FindElement(By.Id("cart"));
@@ -36,13 +36,8 @@ namespace EjerciciosTest.Test
 
             // Obtener valores actuales
             string urlActual = Driver?.Url;
-            bool seEncontroCart = eCart != null && eCart.Displayed;
+            bool seEncontroCart = !string.IsNullOrEmpty(textoCarrito);
             bool seEncontroSearch = searchField != null && searchField.Displayed;
-            string textoCarrito = cartPage.GetTextoCarrito();
-
-            /* ========== CÓDIGO ORIGINAL COMENTADO ==========
-            string textoCarrito = eCart.Text;
-            ========================================================================== */
 
             // ==================== ASSERT ====================
             // Verificar que estamos en la URL correcta

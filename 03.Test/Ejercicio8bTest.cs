@@ -21,11 +21,11 @@ namespace EjerciciosTest.Test
             // Paso 1: Crear instancia de SearchPage
             var searchPage = new SearchPage(Driver);
 
-            // Paso 2: Ingresar "MacBook" en el campo de búsqueda
+            // Paso 2: Ingresar "iPhone" en el campo de búsqueda
             IWebElement searchField = searchPage.GetSearchField();
             Console.WriteLine("✓ Campo de búsqueda localizado (usando SearchPage.GetSearchField())");
-            searchField.SendKeys("MacBook");
-            Console.WriteLine("✓ 'MacBook' ingresado en el campo de búsqueda");
+            searchField.SendKeys("iPhone");
+            Console.WriteLine("✓ 'iPhone' ingresado en el campo de búsqueda");
 
             // Hacer click en el botón de búsqueda
             IWebElement btnSearch = searchPage.GetBtnSearch();

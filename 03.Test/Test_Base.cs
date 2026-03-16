@@ -9,6 +9,9 @@ namespace EjerciciosTest.Test
         // Aquí puedes agregar cualquier configuración común para tus pruebas, como inicialización de datos, configuración de entorno, etc.
         // Driver, TestInitialize, TestCleanup, etc.
 
+        // Propiedad inyectada por MSTest para acceder al contexto del test (nombre, resultado, etc.)
+        public TestContext TestContext { get; set; } = null!;
+
         // URL principal de la aplicación
         protected const string UrlPrincipal = "http://opencart.abstracta.us";
 
@@ -41,6 +44,20 @@ namespace EjerciciosTest.Test
         //Cierre de conexión
         public void TearDown()
         {
+           
+            if (TestContext.CurrentTestOutcome == UnitTestOutcome.Failed && Driver is ITakesScreenshot screenshotDriver)
+            {
+                // Generar un nombre de archivo con el nombre del test y el timestamp
+                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string testName = TestContext.TestName;
+                string fileName = $"{testName}_{timestamp}.png";
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+                // Guardar el screenshot
+                Screenshot screenshot = screenshotDriver.GetScreenshot();
+                screenshot.SaveAsFile(filePath);
+                Console.WriteLine($"✓ Screenshot guardado: {filePath}");
+            }
+            
             Driver?.Quit();
         }
     }

@@ -190,7 +190,7 @@ namespace EjerciciosTest
             IWebElement searchBox = Driver.FindElement(By.Name("search"));
             searchBox.Clear();
             //searchBox.SendKeys("xyzabc999");
-            searchBox.SendKeys("MacBook");
+            searchBox.SendKeys("iPhone");
 
             // Hacer clic en el botón de búsqueda
             btnSearch.Click();
@@ -202,15 +202,15 @@ namespace EjerciciosTest
             // Buscar elementos de productos en la página (usando el selector de productos)
             ReadOnlyCollection<IWebElement> productosEncontrados = Driver.FindElements(By.CssSelector(".product-thumb"));
 
-            // Ahora esperamos que SÍ haya productos porque buscamos "MacBook"
+            // Ahora esperamos que SÍ haya productos porque buscamos "iPhone"
             bool hayProductos = productosEncontrados.Count > 0;
 
             Console.WriteLine($"Cantidad de productos encontrados: {productosEncontrados.Count}");
             Console.WriteLine($"¿Se encontraron productos?: {(hayProductos ? "Sí, correcto" : "No, error")}");
             Console.WriteLine($"URL actual: {Driver.Url}");
 
-            // Verificar que SÍ se encontraron productos (Count debe ser mayor a 0 para MacBook)
-            Assert.IsTrue(hayProductos, $"Se esperaba encontrar productos de MacBook, pero se encontraron {productosEncontrados.Count}");
+            // Verificar que SÍ se encontraron productos (Count debe ser mayor a 0 para iPhone)
+            Assert.IsTrue(hayProductos, $"Se esperaba encontrar productos de iPhone, pero se encontraron {productosEncontrados.Count}");
 
             // Esperar 5 segundos para ver los resultados
             Thread.Sleep(5000);
