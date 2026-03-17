@@ -20,7 +20,7 @@ namespace EjerciciosTest.Test
         */
 
         // ==================== VERSIÓN 1: [DataRow] ====================
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("Mac", 4)]
         [DataRow("Phone", 1)]
         //[DataRow("Tablet", 1)]
@@ -30,7 +30,7 @@ namespace EjerciciosTest.Test
         {
             // ==================== ARRANGE ====================
             Console.WriteLine($"✓ Página principal cargada automáticamente: {Driver?.Url}");
-            var searchPage = new SearchPage(Driver);
+            SearchPage searchPage = new (Driver);
             var productPage = new Product(Driver);
 
             // ==================== ACT ====================
@@ -52,7 +52,7 @@ namespace EjerciciosTest.Test
             ["Canon",   1],
         ];
 
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(DatosBusqueda))]
         public void Test_DataDrivenTesting_DynamicData(string terminoBusqueda, int resultadosEsperados)
         {

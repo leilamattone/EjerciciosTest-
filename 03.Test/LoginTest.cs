@@ -7,8 +7,6 @@ namespace EjerciciosTest.Test
     [TestClass]
     public class LoginTest : Test_Base
     {
-        // Necesario para usar TestContext.TestName, TestRunDirectory, etc.
-        public TestContext TestContext { get; set; }
         [TestMethod]
         public void Test_LoginConPOM_OK()
         {
@@ -29,7 +27,7 @@ namespace EjerciciosTest.Test
             Thread.Sleep(1000);
 
             // Verifica si está en la página de login antes de intentar hacer login
-            Assert.IsTrue(Driver.Url.Contains("route=account/login"), "No se llegó a la página de login");
+            Assert.Contains("route=account/login", Driver.Url, "No se llegó a la página de login");
             Console.WriteLine($"✓ Llegó a la página de login: {Driver.Url}");
 
             loginPage.Login(email, password);
@@ -42,8 +40,8 @@ namespace EjerciciosTest.Test
             Console.WriteLine($"URL después del primer login: {urlDespuesLogin1}");
 
             // ==================== ASSERT - VERIFICAR PRIMER LOGIN EXITOSO ====================
-            Assert.IsTrue(Driver.Title.Contains("My Account"), "La página no contiene 'My Account'");
-            Assert.IsTrue(urlDespuesLogin1.Contains("route=account/account"), "La url de la página no es la esperada");
+            Assert.Contains("My Account", Driver.Title, "La página no contiene 'My Account'");
+            Assert.Contains("route=account/account", urlDespuesLogin1, "La url de la página no es la esperada");
         }
 
         [TestMethod]
@@ -66,7 +64,7 @@ namespace EjerciciosTest.Test
             Thread.Sleep(1000);
 
             // Verifica si está en la página de login antes de intentar hacer login
-            Assert.IsTrue(Driver.Url.Contains("route=account/login"), "No se llegó a la página de login");
+            Assert.Contains("route=account/login", Driver.Url, "No se llegó a la página de login");
             Console.WriteLine($"✓ Llegó a la página de login: {Driver.Url}");
 
             loginPage.Login(email2, password2);
@@ -124,6 +122,124 @@ namespace EjerciciosTest.Test
             Console.WriteLine("✓ Verificación: Mensaje de error (Warning) está visible");
 
             Console.WriteLine("\n✅ ¡Login fallido verificado correctamente!");
+        }
+
+        [TestMethod]
+        public void Test_EditarCuenta_OK()
+        {
+            // ==================== ARRANGE ====================
+            string email    = "leila3@test.com";
+            string password = "Pass12345!";
+            string nuevoNombre = "Leila";
+
+            var loginPage = new LoginPage(Driver);
+
+            // ==================== ACT ====================
+            Console.WriteLine($"✓ Página principal cargada: {Driver?.Url}");
+
+            // Paso 1: Login
+            loginPage.HacerClickMyAccount();
+            Thread.Sleep(500);
+            loginPage.HacerClickLinkLogin();
+            Thread.Sleep(1000);
+            loginPage.Login(email, password);
+            Thread.Sleep(2000);
+            Console.WriteLine($"✓ Login exitoso. URL: {Driver!.Url}");
+
+            // Paso 2: Navegar a Edit Account
+            loginPage.EditAccount();
+            Thread.Sleep(1000);
+            Console.WriteLine($"✓ Formulario Edit Account abierto. URL: {Driver.Url}");
+
+            // Paso 3: Editar solo el nombre (resto vacío = no se modifica)
+            Console.WriteLine($"✓ Editando First Name → '{nuevoNombre}'");
+            loginPage.EditarCuenta(nuevoNombre, "", "", "");
+
+            // Paso 4: Verificar alert de éxito
+            bool exitoEdicion = loginPage.EsperarAlertaExito();
+            Assert.IsTrue(exitoEdicion, "No apareció el mensaje de éxito al guardar la cuenta");
+            Console.WriteLine("✓ Assert OK: alerta 'Your account has been successfully updated' confirmada");
+
+            // Paso 5: Volver a Edit Account para verificar que el nombre fue guardado
+            loginPage.HacerClickMyAccount();
+            Thread.Sleep(500);
+            loginPage.EditAccount();
+            Thread.Sleep(1000);
+
+            string firstNameActual = loginPage.GetFirstNameValue();
+            Console.WriteLine($"✓ Valor actual del campo First Name: '{firstNameActual}'");
+
+            // ==================== ASSERT ====================
+            Assert.AreEqual(nuevoNombre, firstNameActual,
+                $"El First Name debería ser '{nuevoNombre}'. Valor actual: '{firstNameActual}'");
+            Console.WriteLine($"✓ Assert OK: First Name guardado correctamente → '{firstNameActual}'");
+        }
+
+        [TestMethod]
+        public void Test_EditarPassword_OK()
+        {
+            // ==================== ARRANGE ====================
+            string email           = "leila34@test.com";
+            string passwordActual  = "test123";
+            string passwordNuevo   = "test456";
+
+            var loginPage = new LoginPage(Driver);
+
+            // ==================== ACT ====================
+            Console.WriteLine($"✓ Página principal cargada: {Driver?.Url}");
+
+            // Paso 1: Login con contraseña actual
+            loginPage.HacerClickMyAccount();
+            Thread.Sleep(500);
+            loginPage.HacerClickLinkLogin();
+            Thread.Sleep(1000);
+            loginPage.Login(email, passwordActual);
+            Thread.Sleep(2000);
+            Assert.Contains("route=account/account", Driver!.Url, "No se pudo hacer login con la contraseña actual");
+            Console.WriteLine($"✓ Login exitoso con contraseña actual. URL: {Driver.Url}");
+
+            // Paso 2: Navegar al formulario Change Password
+            loginPage.HacerClickMyAccount();
+            Thread.Sleep(500);
+            loginPage.HacerClickBtnPassword();
+            Thread.Sleep(1000);
+            Assert.Contains("route=account/password", Driver.Url, "No se llegó al formulario de cambio de contraseña");
+            Console.WriteLine($"✓ Formulario Change Password abierto. URL: {Driver.Url}");
+
+            // Paso 3: Cambiar la contraseña
+            Console.WriteLine($"✓ Cambiando contraseña → '{passwordNuevo}'");
+            loginPage.EditarContraseña(passwordNuevo, passwordNuevo);
+
+            // Paso 4: Verificar alert de éxito
+            bool exitoCambio = loginPage.EsperarAlertaExito();
+            Assert.IsTrue(exitoCambio, "No apareció el mensaje de éxito al cambiar la contraseña");
+            Console.WriteLine("✓ Assert OK: alerta 'Your password has been successfully updated' confirmada");
+
+            // Paso 5: Logout y login con la nueva contraseña para confirmar el cambio
+            loginPage.HacerClickMyAccount();
+            Thread.Sleep(500);
+            loginPage.HacerClickLogOut();
+            Thread.Sleep(1000);
+            Console.WriteLine("✓ Logout realizado");
+
+            loginPage.HacerClickMyAccount();
+            Thread.Sleep(500);
+            loginPage.HacerClickLinkLogin();
+            Thread.Sleep(1000);
+            loginPage.Login(email, passwordNuevo);
+            Thread.Sleep(2000);
+            Assert.Contains("route=account/account", Driver.Url, "El login con la nueva contraseña falló");
+            Console.WriteLine("✓ Assert OK: login exitoso con la nueva contraseña");
+
+            // Paso 6: Revertir contraseña al valor original (para que el test sea repetible)
+            loginPage.HacerClickMyAccount();
+            Thread.Sleep(500);
+            loginPage.HacerClickBtnPassword();
+            Thread.Sleep(1000);
+            loginPage.EditarContraseña(passwordActual, passwordActual);
+            bool exitoRevertir = loginPage.EsperarAlertaExito();
+            Assert.IsTrue(exitoRevertir, "No se pudo revertir la contraseña al valor original");
+            Console.WriteLine($"✓ Assert OK: contraseña revertida a '{passwordActual}' correctamente");
         }
     }
 }
