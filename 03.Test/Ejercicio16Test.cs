@@ -22,10 +22,10 @@ namespace EjerciciosTest.Test
             Console.WriteLine($"✓ Página principal cargada automáticamente: {Driver?.Url}");
 
             // Crear instancias de SearchPage, Product y CartPage
-            var loginPage = new Pages.LoginPage(Driver);
-            var searchPage = new SearchPage(Driver);
-            var productPage = new Product(Driver);
-            var cartPage = new CartPage(Driver);
+            LoginPage loginPage = new (Driver);
+            SearchPage searchPage = new (Driver);
+            Product productPage = new (Driver);
+            CartPage cartPage = new (Driver);
 
 
             // ==================== ACT ====================

@@ -21,14 +21,12 @@ namespace EjerciciosTest._03.Test
 
             // ==================== ACT ====================
             // Paso 1: Crear instancias de SearchPage, Product y CartPage
-            var searchPage = new SearchPage(Driver);
-            var productPage = new Product(Driver);
-            var cartPage = new CartPage(Driver);
+            SearchPage searchPage = new(Driver);
+            Product productPage = new(Driver);
+            CartPage cartPage = new(Driver);
             
-
             // Paso 2: Hacer clic en Components en el menú.
             searchPage.HacerClickComponents();
-
 
             // Verificar que la URL contiene path=25 y el breadcrumb muestra "Components"
             string urlActual = Driver.Url;
@@ -38,7 +36,6 @@ namespace EjerciciosTest._03.Test
                 $"El breadcrumb no muestra 'Components'. Texto actual: '{searchPage.GetBreadcrumbText()}'");
             Console.WriteLine($"✓ URL correcta: {urlActual}");
             Console.WriteLine($"✓ Breadcrumb correcto: '{searchPage.GetBreadcrumbText()}'");
-
 
             //Hacer clic en Monitors(subcategoría).
             searchPage.HacerClickMonitors();

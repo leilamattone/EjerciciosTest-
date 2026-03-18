@@ -30,8 +30,8 @@ namespace EjerciciosTest.Test
             Thread.Sleep(1000);
 
             // Paso 3: Hacer clic en "Login" dentro del menú desplegado usando LoginPage
-            loginPageNav.HacerClickLogin();
-            Console.WriteLine("✓ Click en 'Login' - Navegando a la página de login (usando LoginPage.GetLoginLink())");
+            loginPageNav.HacerClickLinkLogin();
+            Console.WriteLine("✓ Click en 'Login' - Navegando a la página de login (usando LoginPage.HacerClickLinkLogin())");
 
 
 

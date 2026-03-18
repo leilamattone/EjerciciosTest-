@@ -19,7 +19,7 @@ namespace EjerciciosTest.Test
             // ==================== ACT ====================
             // ========== USANDO SEARCHPAGE ==========
             // Paso 1: Crear instancia de SearchPage
-            var searchPage = new SearchPage(Driver);
+            SearchPage searchPage = new SearchPage(Driver);
 
             // Paso 2: Ingresar "iPhone" en el campo de búsqueda
             IWebElement searchField = searchPage.GetSearchField();
@@ -53,13 +53,13 @@ namespace EjerciciosTest.Test
 
             // ==================== ASSERT ====================
             // Verificar que estamos en la página de resultados de búsqueda
-            StringAssert.Contains(urlActual, "search=MacBook",
+            StringAssert.Contains(urlActual, "search=iPhone",
                 $"No se navegó a la página de búsqueda. URL actual: {urlActual}");
             Console.WriteLine($"✓ URL correcta: {urlActual}");
 
             // Verificar que se encontraron productos
             Assert.IsTrue(productos.Count > 0, 
-                $"Se esperaba encontrar productos de 'MacBook', pero se encontraron {productos.Count}");
+                $"Se esperaba encontrar productos de 'iPhone', pero se encontraron {productos.Count}");
             Console.WriteLine($"✓ Verificación 1: Se encontraron {productos.Count} productos");
 
             // Verificar que todos los productos contienen "MacBook" en su nombre
@@ -67,15 +67,15 @@ namespace EjerciciosTest.Test
             foreach (var producto in productos)
             {
                 string nombreProducto = producto.Text;
-                if (!nombreProducto.Contains("MacBook"))
+                if (!nombreProducto.Contains("iPhone"))
                 {
                     todosContienenMacBook = false;
-                    Console.WriteLine($"⚠️ Producto que no contiene 'MacBook': {nombreProducto}");
+                    Console.WriteLine($"⚠️ Producto que no contiene 'iPhone': {nombreProducto}");
                 }
             }
 
-            Assert.IsTrue(todosContienenMacBook, "Algunos productos no contienen 'MacBook' en su nombre");
-            Console.WriteLine("✓ Verificación 2: Todos los productos contienen 'MacBook'");
+            Assert.IsTrue(todosContienenMacBook, "Algunos productos no contienen 'iPhone' en su nombre");
+            Console.WriteLine("✓ Verificación 2: Todos los productos contienen 'iPhone'");
 
             // Mostrar los primeros 3 productos encontrados
             Console.WriteLine("\n📦 Productos encontrados:");

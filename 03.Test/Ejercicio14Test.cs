@@ -5,7 +5,7 @@ using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 
-namespace EjerciciosTest._03.Test
+namespace EjerciciosTest.Test
 {
     [TestClass]
     public class Ejercicio14Test : Test_Base
@@ -55,10 +55,12 @@ namespace EjerciciosTest._03.Test
 
                 // Agregar el primer producto al carrito
                 string tercerProducto = productos[2].Text;
-                Console.WriteLine($"\n✓ Agregando al carrito el primer producto: '{tercerProducto}'");
+                Console.WriteLine($"\n✓ Agregando al carrito: '{tercerProducto}'");
                 productPage.ClickBtnAddCart();
                 Thread.Sleep(1000);
-                Console.WriteLine($"✓ Producto '{tercerProducto}' agregado al carrito");
+                bool exitoMac = cartPage.EsperarYVerificarAlertaExito();
+                Assert.IsTrue(exitoMac, $"No apareció el alert de éxito al agregar '{tercerProducto}'");
+                Console.WriteLine($"✓ Assert OK: '{tercerProducto}' agregado al carrito - alerta confirmada");
             }
             else
             {
@@ -86,18 +88,41 @@ namespace EjerciciosTest._03.Test
 
                 // Agregar el primer producto al carrito
                 string primerProducto = productos2[0].Text;
-                Console.WriteLine($"\n✓ Agregando al carrito el primer producto: '{primerProducto}'");
+                Console.WriteLine($"\n✓ Agregando al carrito: '{primerProducto}'");
                 productPage.ClickBtnAddCart();
                 Thread.Sleep(1000);
-                Console.WriteLine($"✓ Producto '{primerProducto}' agregado al carrito");
+                bool exitoPhone = cartPage.EsperarYVerificarAlertaExito();
+                Assert.IsTrue(exitoPhone, $"No apareció el alert de éxito al agregar '{primerProducto}'");
+                Console.WriteLine($"✓ Assert OK: '{primerProducto}' agregado al carrito - alerta confirmada");
             }
             else
             {
                 Console.WriteLine("⚠️ No se encontraron productos para 'Tablet'");
             }
 
-            // Paso 4: Mostrar productos del carrito (MostrarProductosCarrito abre el dropdown internamente)
+            // Paso 4: Mostrar productos del carrito
             cartPage.MostrarProductosCarrito();
+
+            // ==================== ASSERT FINAL ====================
+            // Navegar a la página completa del carrito y verificar exactamente 2 filas
+            Driver!.Navigate().GoToUrl(UrlPrincipal + "/index.php?route=checkout/cart");
+            Thread.Sleep(1000);
+            Console.WriteLine($"✓ Navegando al carrito completo. URL: {Driver.Url}");
+
+            var todasLasFilas = Driver.FindElements(By.CssSelector("#content .table tbody tr"));
+            // Filtrar solo filas de productos (tienen <input> de cantidad) — excluye filas de totales
+            var filasCarrito = todasLasFilas.Where(f => f.FindElements(By.TagName("input")).Count > 0).ToList();
+            int cantFilas = filasCarrito.Count;
+            Console.WriteLine($"✓ Total de filas en tabla: {todasLasFilas.Count} | Filas de productos: {cantFilas}");
+
+            Assert.AreEqual(2, cantFilas,
+                $"Deberían haber exactamente 2 filas en el carrito. Encontradas: {cantFilas}");
+            Console.WriteLine("✓ Assert OK: carrito contiene exactamente 2 productos");
+
+            foreach (var fila in filasCarrito)
+            {
+                Console.WriteLine($"  → {fila.FindElements(By.TagName("td"))[1].Text}");
+            }
 
 
         }

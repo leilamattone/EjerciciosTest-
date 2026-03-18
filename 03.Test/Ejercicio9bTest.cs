@@ -18,9 +18,9 @@ namespace EjerciciosTest._03.Test
 
             // ==================== ACT ====================
             // Paso 1: Crear instancias de SearchPage, Product y CartPage
-            var searchPage = new SearchPage(Driver);
-            var productPage = new Product(Driver);
-            var cartPage = new CartPage(Driver);
+            SearchPage searchPage = new (Driver);
+            Product productPage = new (Driver);
+            CartPage cartPage = new (Driver);
 
             // Paso 2: Ingresar "iPhone" en el campo de búsqueda
             IWebElement searchField = searchPage.GetSearchField();

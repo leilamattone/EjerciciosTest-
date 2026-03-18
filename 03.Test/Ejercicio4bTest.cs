@@ -22,7 +22,7 @@ namespace EjerciciosTest.Test
 
             // ========== USANDO SEARCHPAGE con método Get ==========
             // Crear instancia de SearchPage
-            var searchPage = new SearchPage(Driver);
+            SearchPage searchPage = new SearchPage(Driver);
 
             // Paso 2: Localizar el campo de búsqueda usando SearchPage
             IWebElement searchField = searchPage.GetSearchField();

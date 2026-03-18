@@ -21,9 +21,9 @@ namespace EjerciciosTest.Test
 
             // ========== USANDO SEARCHPAGE con método Get ==========
             // Crear instancia de CartPage
-            var cartPage = new CartPage(Driver);
+            CartPage cartPage = new CartPage(Driver);
             // Crear instancia de SearchPage
-            var searchPage = new SearchPage(Driver);
+            SearchPage searchPage = new SearchPage(Driver);
 
             // Obtener elementos de la página usando SearchPage y CartPage
             IWebElement searchField = searchPage.GetSearchField();

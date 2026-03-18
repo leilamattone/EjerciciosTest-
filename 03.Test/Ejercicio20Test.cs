@@ -54,6 +54,9 @@ namespace EjerciciosTest.Test
             Driver.FindElement(By.Id("input-confirm")).SendKeys("Pass12345!");
             loginPage.HacerClickBtnCheckBox();
             loginPage.HacerClickBtnContinue();
+            Thread.Sleep(1000);
+            loginPage.HacerClickMyAccount();
+            Thread.Sleep(500);
             loginPage.HacerClickLogOut();
 
             // Paso 2: Iniciar sesión con el usuario recién creado usando el POM de LoginPage

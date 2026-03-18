@@ -87,11 +87,12 @@ namespace EjerciciosTest.Pages
         // Cierra el dropdown solo si está abierto
         private void CerrarDropdown()
         {
-            if (eCart.GetAttribute("class").Contains("open"))
+            if (!eCart.GetAttribute("class").Contains("open"))
             {
-                eCart.Click();
-                Thread.Sleep(300);
+                return;
             }
+            eCart.Click();
+            Thread.Sleep(300);
         }
 
         // Busca un producto por categoría y nombre, y lo agrega al carrito la cantidad indicada

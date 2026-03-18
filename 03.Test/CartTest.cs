@@ -114,8 +114,7 @@ namespace EjerciciosTest.Test
             // Verificar que queda exactamente 1 cámara Canon en el carrito
             string textoCarrito = cartPage.GetTextoCarrito();
             Console.WriteLine($"✓ Resumen del botón carrito: {textoCarrito}");
-            Assert.IsTrue(textoCarrito.Contains("1 item(s)"),
-                $"El carrito debería mostrar '1 item(s)' (1 Canon). Texto actual: {textoCarrito}");
+            Assert.Contains("1 item(s)",textoCarrito, $"El carrito debería mostrar '1 item(s)' (1 Canon). Texto actual: {textoCarrito}");
             Console.WriteLine($"✓ Assert OK: carrito contiene exactamente 1 cámara Canon → {textoCarrito}");
         }
 
